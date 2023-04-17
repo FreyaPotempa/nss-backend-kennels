@@ -1,31 +1,27 @@
-import { useState } from "react"
+import { useState } from "react";
 import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom";
 import { loginCustomer } from "../../managers/customers";
-import "./Login.css"
+import "./Login.css";
 
 export const Login = () => {
-  const [email, setEmail] = useState("")
-  const navigate = useNavigate()
+  const [email, setEmail] = useState("");
+  const navigate = useNavigate();
 
   const handleLogin = (e) => {
-    e.preventDefault()
+    e.preventDefault();
 
-    loginCustomer(email)
-      .then((foundUsers) => {
-        if (foundUsers.length === 1) {
-          const user = foundUsers[0]
-          localStorage.setItem("kennels_customer", JSON.stringify(
-            user.id
-          ))
+    loginCustomer(email).then((foundUsers) => {
+      if (foundUsers) {
+        const user = foundUsers;
+        localStorage.setItem("kennels_customer", JSON.stringify(user.id));
 
-          navigate("/")
-        }
-        else {
-          window.alert("Invalid login")
-        }
-      })
-  }
+        navigate("/");
+      } else {
+        window.alert("Invalid login");
+      }
+    });
+  };
 
   return (
     <main className="container--login">
@@ -35,17 +31,18 @@ export const Login = () => {
           <h2>Please sign in</h2>
           <fieldset>
             <label htmlFor="inputEmail"> Email address </label>
-            <input type="email"
+            <input
+              type="email"
               value={email}
-              onChange={evt => setEmail(evt.target.value)}
+              onChange={(evt) => setEmail(evt.target.value)}
               className="form-control"
               placeholder="Email address"
-              required autoFocus />
+              required
+              autoFocus
+            />
           </fieldset>
           <fieldset>
-            <button type="submit">
-              Sign in
-            </button>
+            <button type="submit">Sign in</button>
           </fieldset>
         </form>
       </section>
@@ -53,6 +50,5 @@ export const Login = () => {
         <Link to="/register">Not a member yet?</Link>
       </section>
     </main>
-  )
-}
-
+  );
+};

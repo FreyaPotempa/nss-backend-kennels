@@ -1,37 +1,37 @@
-import { useState, useEffect } from "react"
-import { addAnimal, updateAnimal, getAnimalById } from "../../managers/animals"
-import { getLocations } from "../../managers/locations"
-import { useParams, useNavigate } from 'react-router-dom'
+import { useState, useEffect } from "react";
+import { addAnimal, updateAnimal, getAnimalById } from "../../managers/animals";
+import { getLocations } from "../../managers/locations";
+import { useParams, useNavigate } from "react-router-dom";
 
 export const AnimalForm = () => {
-  const [locations, setLocations] = useState([])
-  const { animalId } = useParams()
-  const [animal, setAnimal] = useState({})
-  const navigate = useNavigate()
+  const [locations, setLocations] = useState([]);
+  const { animalId } = useParams();
+  const [animal, setAnimal] = useState({});
+  const navigate = useNavigate();
 
   const handleControlledInputChange = (event) => {
-    const newAnimal = Object.assign({}, animal)
-    newAnimal[event.target.name] = event.target.value
-    setAnimal(newAnimal)
-  }
+    const newAnimal = Object.assign({}, animal);
+    newAnimal[event.target.name] = event.target.value;
+    setAnimal(newAnimal);
+  };
 
   useEffect(() => {
-    getLocations().then(locationsData => setLocations(locationsData))
-  }, [])
+    getLocations().then((locationsData) => setLocations(locationsData));
+  }, []);
 
   useEffect(() => {
     if (animalId) {
       getAnimalById(animalId).then((res) => {
-        setAnimal(res)
-      })
+        setAnimal(res);
+      });
     }
-  }, [animalId])
+  }, [animalId]);
 
   const constructNewAnimal = () => {
-    const locationId = parseInt(animal.location_id)
+    const location_id = parseInt(animal.location_id);
 
-    if (locationId === 0) {
-      window.alert("Please select a location")
+    if (location_id === 0) {
+      window.alert("Please select a location");
     } else {
       if (animalId) {
         // PUT
@@ -39,32 +39,37 @@ export const AnimalForm = () => {
           id: animal.id,
           name: animal.name,
           breed: animal.breed,
-          locationId: locationId,
+          location_id: location_id,
           status: animal.status,
-          customerId: parseInt(localStorage.getItem("kennels_customer"))
-        })
-          .then(() => navigate("/animals"))
+          customer_id: parseInt(localStorage.getItem("kennels_customer")),
+        }).then(() => navigate("/animals"));
       } else {
         // POST
         addAnimal({
           name: animal.name,
           breed: animal.breed,
-          locationId: locationId,
+          location_id: location_id,
           status: animal.status,
-          customerId: parseInt(localStorage.getItem("kennels_customer"))
-        })
-          .then(() => navigate("/animals"))
+          customer_id: parseInt(localStorage.getItem("kennels_customer")),
+        }).then(() => navigate("/animals"));
       }
     }
-  }
+  };
 
   return (
     <form className="animalForm">
-      <h2 className="animalForm__title">{animalId ? "Update Animal" : "Admit Animal"}</h2>
+      <h2 className="animalForm__title">
+        {animalId ? "Update Animal" : "Admit Animal"}
+      </h2>
       <fieldset>
         <div className="form-group">
           <label htmlFor="name">Animal name: </label>
-          <input type="text" name="name" required autoFocus className="form-control"
+          <input
+            type="text"
+            name="name"
+            required
+            autoFocus
+            className="form-control"
             placeholder="Animal name"
             defaultValue={animal.name}
             onChange={handleControlledInputChange}
@@ -74,7 +79,11 @@ export const AnimalForm = () => {
       <fieldset>
         <div className="form-group">
           <label htmlFor="breed">Animal breed: </label>
-          <input type="text" name="breed" required className="form-control"
+          <input
+            type="text"
+            name="breed"
+            required
+            className="form-control"
             placeholder="Animal breed"
             defaultValue={animal.breed}
             onChange={handleControlledInputChange}
@@ -83,39 +92,44 @@ export const AnimalForm = () => {
       </fieldset>
       <fieldset>
         <div className="form-group">
-          <label htmlFor="locationId">Location: </label>
-          <select name="locationId" className="form-control"
+          <label htmlFor="location_id">Location: </label>
+          <select
+            name="location_id"
+            className="form-control"
             value={animal.location_id}
-            onChange={handleControlledInputChange}>
-
+            onChange={handleControlledInputChange}
+          >
             <option value="0">Select a location</option>
-            {
-              locations.map(e => (
-                <option key={e.id} value={e.id}>
-                  {e.name}
-                </option>
-              ))
-            }
+            {locations.map((e) => (
+              <option key={e.id} value={e.id}>
+                {e.name}
+              </option>
+            ))}
           </select>
         </div>
       </fieldset>
       <fieldset>
         <div className="form-group">
           <label htmlFor="treatment">Status: </label>
-          <textarea type="text" name="status" className="form-control"
+          <textarea
+            type="text"
+            name="status"
+            className="form-control"
             value={animal.status}
-            onChange={handleControlledInputChange}>
-          </textarea>
+            onChange={handleControlledInputChange}
+          ></textarea>
         </div>
       </fieldset>
-      <button type="submit"
-        onClick={evt => {
-          evt.preventDefault()
-          constructNewAnimal()
+      <button
+        type="submit"
+        onClick={(evt) => {
+          evt.preventDefault();
+          constructNewAnimal();
         }}
-        className="btn btn-primary">
+        className="btn btn-primary"
+      >
         {animalId ? "Save Updates" : "Make Reservation"}
       </button>
     </form>
-  )
-}
+  );
+};
